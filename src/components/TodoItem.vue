@@ -1,15 +1,17 @@
 <template>
   <li :class="{completed: item.isCompleted}">
     <span>
-      <input type="checkbox" @change="$emit('update', item.id)" :checked="item.isCompleted" />
+      <input type="checkbox" @change="changeStorageStatus(item.id)" :checked="item.isCompleted" />
       <strong>{{index + 1}}.</strong>
       {{item.title}}
     </span>
-    <button @click="$emit('remove-item', item.id)">&times;</button>
+    <button @click="removeFromStorage(item.id)">&times;</button>
   </li>
 </template>
 
 <script>
+import {mapActions} from 'vuex'
+
 export default {
   name: "list-item",
   props: {
@@ -21,6 +23,8 @@ export default {
       type: Number,
     },
   },
+  methods: mapActions(['removeFromStorage', 'changeStorageStatus'])
+  
 };
 </script>
 

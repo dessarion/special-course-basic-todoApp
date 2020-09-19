@@ -6,8 +6,6 @@
             :key="item.id"
             :item="item"
             :index="i"
-            @remove-item="$emit('remove-item', item.id)"
-            @update="$emit('update-status', item.id)"
          />
       </ul>
   </div>

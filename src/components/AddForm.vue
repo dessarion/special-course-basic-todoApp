@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
+
 export default {
     name: 'add-item',    
     data() {
@@ -14,6 +16,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['sendToStorage']),
         submitItem() {
             if (this.item.trim()) {
                 const newItem = {
@@ -21,7 +24,7 @@ export default {
                     title: this.item,
                     isCompleted: false
                 }
-                this.$emit('add-todo', newItem)
+                this.sendToStorage(newItem)
                 this.item = ''                
             }
         }

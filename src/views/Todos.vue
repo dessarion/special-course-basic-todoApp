@@ -1,7 +1,7 @@
 <template>
   <div>
       <h2>Welcome in Todo app</h2>
-      <AddItem @add-todo="addTodo" />
+      <AddForm />
       <select  v-model="filter">
         <option value="all">All tasks</option>
         <option value="completed">Completed tasks</option>
@@ -11,8 +11,6 @@
       <TodoList 
         v-if="filteredTodos.length"
         :todos="filteredTodos"
-        @remove-item="removeTodo"
-        @update-status="updateStatus"
       />
       <h3 v-else>Todo list is empty!</h3>
       <hr>
@@ -21,53 +19,38 @@
 </template>
 
 <script>
+import {mapGetters, mapActions} from 'vuex'
 import TodoList from '@/components/TodoList'
-import AddItem from '@/components/AddItem'
+import AddForm from '@/components/AddForm'
 
 export default {
   data() {
     return {
-      todos: [],
       filter: 'all'
     }
   },
   components: {
     TodoList,
-    AddItem,
+    AddForm,
   },
   mounted () {
-    this.todos = JSON.parse(localStorage.getItem('todos') || '[]');
+    this.fetchTodos()
   },
   computed: {
+    ...mapGetters(['getTodos', 'getCompletedTodos' , 'getUncompletedTodos']),
     filteredTodos() {
       if (this.filter === 'all'){
-        return this.todos
+        return this.getTodos
       }
-
       if (this.filter === 'completed'){
-        return this.todos.filter(t => t.isCompleted)
+        return this.getCompletedTodos
       }
-
       if (this.filter === 'uncompleted'){
-        return this.todos.filter(t => !t.isCompleted)
+         return this.getUncompletedTodos
       }
     }
   },
-  methods: {
-    addTodo(item) {
-      this.todos.push(item)
-      localStorage.setItem('todos', JSON.stringify(this.todos))  
-    },
-    removeTodo(id) {
-      this.todos = this.todos.filter(t => t.id !== id)
-      localStorage.setItem('todos', JSON.stringify(this.todos))  
-    },
-    updateStatus(id) {
-      const index = this.todos.findIndex(t => t.id === id)
-      this.todos[index].isCompleted = !this.todos[index].isCompleted
-      localStorage.setItem('todos', JSON.stringify(this.todos))  
-    }
-  },
+  methods: mapActions(['fetchTodos']),
 }
 </script>
 
